@@ -1,3 +1,11 @@
 # Local planning notes; not part of the published project repository.
 afterbuy_workflow_operativo_definitivo_aggiornato_con_landing.md
 workflowChatgpt.md
+
+# Detailed implementation workflow for local coding agents. The published
+# documentation lives in docs/editorial/.
+/docs/adr/
+/docs/architecture/
+/docs/design/
+/docs/marketing/
+/docs/product/
