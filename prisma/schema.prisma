@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// --- Core domain entities (MVP) ---
+
+model Store {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  website   String?
+  purchases Purchase[]
+}
+
+model Purchase {
+  id           String   @id @default(cuid())
+  productName  String
+  storeId      String
+  store        Store    @relation(fields: [storeId], references: [id])
+  category     String?
+  orderNumber  String?
+  purchaseDate DateTime
+  priceCents   Int
+  notes        String?
+
+  // Return policy snapshot
+  returnPolicyDays Int?
+
+  // Lifecycle records
+  returnCase  ReturnCase?
+  refund      Refund?
+  warranty    Warranty?
+
+  documents     PurchaseDocument[]
+  timelineEvents TimelineEvent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ReturnCase {
+  id          String   @id @default(cuid())
+  purchaseId  String   @unique
+  purchase    Purchase @relation(fields: [purchaseId], references: [id])
+  status      String   @default("not_initiated") // not_initiated | planned | in_progress | returned | completed
+  initiatedAt DateTime?
+  resolvedAt  DateTime?
+  notes       String?
+}
+
+model Refund {
+  id              String   @id @default(cuid())
+  purchaseId      String   @unique
+  purchase        Purchase @relation(fields: [purchaseId], references: [id])
+  status          String   @default("not_initiated") // not_initiated | expected | pending | received | completed
+  expectedAmountCents Int?
+  receivedAmountCents  Int?
+  receivedAt      DateTime?
+  notes           String?
+}
+
+model Warranty {
+  id              String   @id @default(cuid())
+  purchaseId      String   @unique
+  purchase        Purchase @relation(fields: [purchaseId], references: [id])
+  durationMonths  Int?
+  status          String   @default("active") // active | expiring | expired | claimed | completed
+  expiresAt       DateTime?
+  claimNotes      String?
+}
+
+model PurchaseDocument {
+  id         String   @id @default(cuid())
+  purchaseId String
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+  type       String   // receipt | invoice | manual | warranty_card | support_link | other
+  label      String?
+  url        String?
+  isPresent  Boolean  @default(false)
+  notes      String?
+}
+
+model TimelineEvent {
+  id          String   @id @default(cuid())
+  purchaseId  String
+  purchase    Purchase @relation(fields: [purchaseId], references: [id])
+  type        String   // purchased | return_initiated | return_completed | refund_received | warranty_claimed | status_change | note_added
+  description String
+  occurredAt  DateTime @default(now())
+}
