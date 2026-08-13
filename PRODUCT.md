@@ -12,9 +12,9 @@ Next.js App Router, TypeScript, React, Prisma, SQLite, Tailwind CSS, Vitest, Pla
 
 ## Users
 
-Primary visitor for the public landing: a curious demo visitor evaluating a work-in-progress product experiment. They arrive wanting to understand the post-purchase problem AfterBuy addresses, what they can try now versus what is still being built, and whether the preview is honest about its limits.
+Primary user on every surface: a frequent online shopper who needs to protect returns, refunds, and warranties. Landing and app both speak to that person.
 
-Secondary audience (not primary for this landing reshape): recruiters or engineering reviewers assessing scope and craft — served indirectly through clarity and transparency, not as the main narrative frame.
+A reviewer or product-driven company may also look at the landing. That is a quality and credibility constraint (clarity, mechanism, honest WIP, craft), not a second audience that changes the message.
 
 ## Product Purpose
 
@@ -50,7 +50,7 @@ The product is built around one question — *what needs attention today or this
 
 ## Evidence on Hand
 
-- Editorial product, design, and public-preview docs under `docs/editorial/`.
+- Product contract (`docs/editorial/product-contract.md`) and other editorial docs under `docs/editorial/`. The contract is normative for domain, scope, and routes.
 - Implemented landing at `src/app/page.tsx` (incumbent, subject to rethink).
 - Design tokens in `tailwind.config.ts` (neutral palette, signal colours, Inter stack).
 - No real dashboard screenshot yet; hero may use an honest wireframe built from tokens until `/app` is demoable.

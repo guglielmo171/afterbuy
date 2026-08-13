@@ -4,10 +4,10 @@
 
 - AfterBuy is a frontend-led, lightweight full-stack product built with Next.js App Router, TypeScript, React, Prisma, SQLite, Zod, React Hook Form, Vitest, Testing Library and Playwright.
 - The intended structure is `src/app` (routes and boundaries), `src/features` (product flows), `src/entities` (pure domain), `src/shared` (small reusable primitives, validation and utilities), `src/server` (Prisma, repositories, queries and Server Actions), `prisma` (schema and seed), and `tests/e2e`.
-- Treat `README.md`, `docs/product/`, `docs/architecture/`, `docs/design/`, `docs/marketing/` and `docs/adr/` as the product and architecture source of truth. Do not override accepted ADRs.
-- For every UI change, read and follow `docs/design/design-brief.md`, `screen-specs.md`, `design-system.md`, `ux-states.md` and `impeccable-review.md`.
-- For every landing or public-preview change, also follow `docs/marketing/landing-page-brief.md`, `landing-page-structure.md`, `landing-page-copy.md` and `wip-transparency.md`.
-- Preserve the MVP boundary: purchases, deadlines, lifecycle statuses and urgent actions. Authentication, real uploads/OCR, integrations, notifications, jobs, payments and multi-user features are out of scope.
+- Public source of truth: `README.md`, `docs/editorial/product-contract.md`, other files in `docs/editorial/`, `PRODUCT.md`, and `DESIGN.md`. The product contract wins on domain, statuses, urgency, dates, scope, and routes. Do not treat the current Prisma schema as the contract.
+- Local working notes (`docs/product/`, `docs/architecture/`, `docs/design/`, `docs/marketing/`, `docs/adr/`, the local workflow file, and `prompts/`) may be absent on a public clone. If they are present, they do not override the contract.
+- For app UI changes, follow `DESIGN.md`, `docs/editorial/design.md`, and the visual rules in the product contract. For landing or public-preview copy, follow `docs/editorial/public-preview.md`. Keep WIP labels and CTA destination centrally configured.
+- Preserve the MVP boundary in the product contract. Slice 1 is the return loop only. Authentication, real uploads/OCR, integrations, notifications, jobs, payments, multi-user features, delete/archive, and fake import are out of scope.
 
 ## Comandi e definizione di done
 
@@ -24,9 +24,9 @@
 - Only `src/server` repositories, DB setup and seed/test setup may import Prisma. Use explicit query shapes and map persistence data before it reaches client components.
 - Validate all mutation and query input with canonical Zod schemas in `src/shared/validation`; validate again server-side before persistence.
 - Use Server Actions for internal mutations and route handlers only for deliberate API-shaped boundaries. Use transactions for purchase creation and related lifecycle/timeline records.
-- Store money in integer cents. Store document metadata and references only—never real files or personal documents.
-- Follow the lightweight design system exactly: utilitarian premium, neutral palette, semantic signal colours only for urgency, mobile-first layouts, visible focus, AA contrast, and text in addition to colour for status.
-- Use the approved English landing copy verbatim unless a source document explicitly permits a status-dependent variation. Keep all WIP labels and CTA destination centrally configured.
+- Store money in integer cents with currency default EUR. Store document metadata and references only—never real files or personal documents.
+- Follow the two visual worlds in the product contract: landing uses the Pinned Action Slip world; `/app` uses utilitarian premium, a neutral palette, and semantic signal colours only for urgency. Do not mix materials. Mobile-first layouts, visible focus, AA contrast, and text in addition to colour for status.
+- Use the approved English landing copy in `docs/editorial/public-preview.md` verbatim unless that file explicitly permits a status-dependent variation. Keep all WIP labels and CTA destination centrally configured. Product language and metadata are English.
 
 ## Regole operative dell'agente
 

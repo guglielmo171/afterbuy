@@ -4,7 +4,7 @@
 
 The landing page should explain the product before it asks a visitor to try a demo. It is an entry point to a work in progress, not a substitute for a finished application.
 
-Primary audience: a curious visitor evaluating a work-in-progress product experiment. Secondary audience: recruiters or engineering reviewers — served through clarity of scope and honest WIP disclosure, not technical inventory.
+Primary audience: the product user (frequent online shopper / anyone protecting returns, refunds, and warranties). A reviewer or product-driven company may also look at this page — a quality constraint, not a second narrative.
 
 ## Voice
 
