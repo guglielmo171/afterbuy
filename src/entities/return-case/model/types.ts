@@ -1,9 +1,12 @@
 /** Persisted return lifecycle statuses (product contract §5). */
-export type ReturnStatus =
-  | "not_planned"
-  | "return_planned"
-  | "returned"
-  | "closed";
+export const PERSISTED_RETURN_STATUSES = [
+  "not_planned",
+  "return_planned",
+  "returned",
+  "closed",
+] as const;
+
+export type ReturnStatus = (typeof PERSISTED_RETURN_STATUSES)[number];
 
 /** Derived urgency for a deadline (never persisted). */
 export type UrgencyLevel = "overdue" | "due_soon" | "none";
