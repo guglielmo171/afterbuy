@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Product contract: docs/editorial/product-contract.md §5–10
 
 generator client {
   provider = "prisma-client-js"
@@ -10,13 +9,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// --- Core domain entities (MVP) ---
+enum ReturnStatus {
+  not_planned
+  return_planned
+  returned
+  closed
+}
+
+enum RefundStatus {
+  not_expected
+  pending
+  received
+  issue
+}
 
 model Store {
-  id        String     @id @default(cuid())
-  name      String     @unique
-  website   String?
-  purchases Purchase[]
+  id                      String     @id @default(cuid())
+  name                    String     @unique
+  defaultReturnPolicyDays Int?
+  purchases               Purchase[]
 }
 
 model Purchase {
@@ -25,20 +36,14 @@ model Purchase {
   storeId      String
   store        Store    @relation(fields: [storeId], references: [id])
   category     String?
-  orderNumber  String?
   purchaseDate DateTime
   priceCents   Int
-  notes        String?
+  currency     String   @default("EUR")
 
-  // Return policy snapshot
-  returnPolicyDays Int?
-
-  // Lifecycle records
-  returnCase  ReturnCase?
-  refund      Refund?
-  warranty    Warranty?
-
-  documents     PurchaseDocument[]
+  returnCase     ReturnCase?
+  refund         Refund?
+  warranty       Warranty?
+  documents      PurchaseDocument[]
   timelineEvents TimelineEvent[]
 
   createdAt DateTime @default(now())
@@ -46,41 +51,39 @@ model Purchase {
 }
 
 model ReturnCase {
-  id          String   @id @default(cuid())
-  purchaseId  String   @unique
-  purchase    Purchase @relation(fields: [purchaseId], references: [id])
-  status      String   @default("not_initiated") // not_initiated | planned | in_progress | returned | completed
-  initiatedAt DateTime?
-  resolvedAt  DateTime?
-  notes       String?
+  id               String       @id @default(cuid())
+  purchaseId       String       @unique
+  purchase         Purchase     @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  returnPolicyDays Int
+  returnDeadline   DateTime
+  status           ReturnStatus @default(not_planned)
 }
 
 model Refund {
-  id              String   @id @default(cuid())
-  purchaseId      String   @unique
-  purchase        Purchase @relation(fields: [purchaseId], references: [id])
-  status          String   @default("not_initiated") // not_initiated | expected | pending | received | completed
+  id                  String       @id @default(cuid())
+  purchaseId          String       @unique
+  purchase            Purchase     @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  status              RefundStatus @default(pending)
   expectedAmountCents Int?
-  receivedAmountCents  Int?
-  receivedAt      DateTime?
-  notes           String?
+  receivedAmountCents Int?
+  receivedAt          DateTime?
+  notes               String?
 }
 
 model Warranty {
-  id              String   @id @default(cuid())
-  purchaseId      String   @unique
-  purchase        Purchase @relation(fields: [purchaseId], references: [id])
-  durationMonths  Int?
-  status          String   @default("active") // active | expiring | expired | claimed | completed
-  expiresAt       DateTime?
-  claimNotes      String?
+  id             String   @id @default(cuid())
+  purchaseId     String   @unique
+  purchase       Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  durationMonths Int
+  expiresAt      DateTime
+  notes          String?
 }
 
 model PurchaseDocument {
   id         String   @id @default(cuid())
   purchaseId String
-  purchase   Purchase @relation(fields: [purchaseId], references: [id])
-  type       String   // receipt | invoice | manual | warranty_card | support_link | other
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  type       String
   label      String?
   url        String?
   isPresent  Boolean  @default(false)
@@ -90,8 +93,8 @@ model PurchaseDocument {
 model TimelineEvent {
   id          String   @id @default(cuid())
   purchaseId  String
-  purchase    Purchase @relation(fields: [purchaseId], references: [id])
-  type        String   // purchased | return_initiated | return_completed | refund_received | warranty_claimed | status_change | note_added
+  purchase    Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  type        String
   description String
   occurredAt  DateTime @default(now())
 }

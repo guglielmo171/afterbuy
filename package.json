@@ -27,6 +27,9 @@
     "react-hook-form": "^7.55.0",
     "zod": "^3.24.3"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "@testing-library/jest-dom": "6.9.1",
