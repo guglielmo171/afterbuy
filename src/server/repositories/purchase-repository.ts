@@ -77,6 +77,21 @@ async function getMappedPurchase(
   return mapPurchase(row);
 }
 
+export async function getPurchaseById(
+  id: string,
+): Promise<PurchaseRecord | null> {
+  const row = await prisma.purchase.findUnique({
+    where: { id },
+    include: purchaseWriteInclude,
+  });
+
+  if (!row) {
+    return null;
+  }
+
+  return mapPurchase(row);
+}
+
 export async function createPurchaseRecord(
   input: CreatePurchaseInput,
 ): Promise<PurchaseRecord> {
